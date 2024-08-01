@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.example.demo.mapper.ComplainsMapper">
+
+    <resultMap id="ComplainsDTOMap" type="com.example.demo.dto.ComplainsDto">
+        <id column="Notification_id" property="notificationId"/>
+        <result column="Notification_Time" property="notificationTime"/>
+        <result column="Notification_Content" property="notificationContent"/>
+        <result column="Adoption_Status" property="adoptionStatus"/>
+        <result column="username" property="username"/>
+        <result column="User_id" property="userId"/>
+    </resultMap>
+
+
+    <select id="selectAll" resultMap="ComplainsDTOMap">
+        select
+            c.Notification_id,
+            c.Notification_Time,
+            c.Notification_Content,
+            c.Adoption_Status,
+            u.username,
+            u.User_id
+        from Complaints c, users u
+        where c.User_id=u.User_id
+        order by Notification_id
+    </select>
+
+    <select id="selectDy" resultType="ComplainsDto">
+        select
+            c.Notification_id,
+            c.Notification_Time,
+            c.Notification_Content,
+            c.Adoption_Status,
+            u.username
+        from Complaints c, users u
+        <where>
+             c.User_id=u.User_id
+            <if test="username !=null">
+                and username like concat('%',#{username},'%')
+            </if>
+            <if test="adoptionStatus !=null">
+                and c.Adoption_Status =#{adoptionStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="seeText" resultType="ComplainsDto">
+        select
+            c.Notification_id,
+            c.Notification_Content
+            from Complaints c
+        where Notification_id=#{notificationId}
+    </select>
+
+
+</mapper>

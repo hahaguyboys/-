@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.CommonMapper">
+
+    <resultMap id="RecordsMap" type="com.example.demo.dto.AdoRecordsDto">
+
+            <id column="Adoption_Records_id" property="adoptionRecordsId"/>
+            <result column="User_id" property="userId"/>
+            <result column="username" property="username"/>
+            <result column="Pet_id" property="petId"/>
+            <result column="Breed" property="breed"/>
+            <result column="Adoption_Time" property="adoptionTime"/>
+            <result column="adoption_Status" property="adoptionStatus"/>
+
+    </resultMap>
+
+    <select id="selectRecords" resultMap="RecordsMap">
+        select ar.Adoption_Records_id,u.User_id,u.username,p.Pet_id,p.Breed,ar.Adoption_Time,ar.adoption_Status
+        from adoption_records ar,users u, pets p
+        where ar.User_id=u.User_id and ar.Pet_id=p.Pet_id
+        order by Adoption_Time desc ,Adoption_Records_id desc
+    </select>
+
+    <select id="selectDYRecords" resultType="AdoRecordsDto">
+        select ar.Adoption_Records_id,u.User_id,u.username,p.Pet_id,p.Breed,ar.Adoption_Time,ar.adoption_Status
+        from adoption_records ar ,users u, pets p
+        <where>
+            ar.User_id=u.User_id and ar.Pet_id=p.Pet_id
+
+            <if test="username !=null">
+                and username like concat('%',#{username},'%')
+            </if>
+
+            <if test="breed !=null">
+                 and Breed like concat('%',#{breed},'%')
+            </if>
+        </where>
+        order by Adoption_Time desc
+    </select>
+
+    <insert id="addRecords">
+        insert into adoption_records(user_id, pet_id, adoption_time, adoption_status)
+        values(#{userId},#{petId},#{adoptionTime},#{adoptionStatus})
+
+    </insert>
+
+        <resultMap id="popularMap" type="com.example.demo.dto.Popular">
+            <result column="Category" property="category"/>
+            <result column="count" property="count1"/>
+        </resultMap>
+
+    <select id="popular" resultMap="popularMap">
+        select p.Category,count(p.Category) as count
+        from pets p
+                 join adoption_records ar on ar.Pet_id = p.Pet_id
+        where ar.adoption_Status=1
+        group by p.Category
+        order by '总数量' desc
+        limit 1;
+    </select>
+
+
+    <resultMap id="regionMap" type="com.example.demo.dto.Region">
+        <result column="Region" property="region"/>
+        <result column="count" property="count2"/>
+    </resultMap>
+
+    <select id="region" resultMap="regionMap">
+        SELECT p.Region, COUNT(ar.Pet_id) as count
+        FROM pets p
+                 JOIN adoption_records ar  ON p.Pet_id = ar.Pet_id
+        GROUP BY p.Region
+        ORDER BY count DESC;
+    </select>
+
+
+</mapper>

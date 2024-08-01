@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.PetMapper">
+    <select id="selectPet" resultType="com.example.demo.pojo.Pets" >
+            select *
+            from pets
+            <where>
+                <if test="category !=null">
+                   and Category like concat('%',#{category},'%')
+                </if>
+                <if test="breed !=null">
+                    and Breed like concat('%',#{breed},'%')
+                </if>
+                <if test="gender !=null">
+                    and Gender = #{gender}
+                </if>
+                <if test="neutered !=null">
+                    and Neutered = #{neutered}
+                </if>
+                <if test="adoptionHistory !=null">
+                    and Adoption_History = #{adoptionHistory}
+                </if>
+            </where>
+    </select>
+
+
+    <update id="updateDynamic">
+        update pets
+        <set>
+            <if test="category !=null">
+                Category=#{category},
+            </if>
+            <if test="breed !=null">
+                Breed=#{breed},
+            </if>
+            <if test="age !=null">
+                Age=#{age},
+            </if>
+            <if test="gender !=null">
+                Gender=#{gender},
+            </if>
+            <if test="weight !=null">
+                Weight=#{weight},
+            </if>
+            <if test="color !=null">
+                Color=#{color},
+            </if>
+            <if test="region !=null">
+                Region=#{region},
+            </if>
+            <if test="petName !=null">
+                pet_name=#{petName},
+            </if>
+            <if test="neutered !=null">
+                Neutered=#{neutered},
+            </if>
+            <if test="adoptionHistory !=null">
+                Adoption_History=#{adoptionHistory},
+            </if>
+            <if test="adoptionStatus !=null">
+                Adoption_Status=#{adoptionStatus}
+            </if>
+        </set>
+        where Pet_id=#{petId}
+    </update>
+
+
+    <insert id="addPet">
+        insert into pets(category, breed, age, gender, weight, color, region, pet_name, neutered,
+                         adoption_history, adoption_status)
+        values (#{category},#{breed},#{age},#{gender},#{weight},#{color},#{region},#{petName},
+                #{neutered},#{adoptionHistory},#{adoptionStatus})
+    </insert>
+
+
+    <update id="changePetStatus">
+        update pets set Adoption_Status=#{adoptionStatus} where Pet_id=#{petId}
+    </update>
+
+</mapper>

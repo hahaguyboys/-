@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.mapper.PetHealthMapper">
+    <update id="updateHealthDynamic">
+        update pet_health_records
+    <set>
+        <if test="vetRecords !=null">
+            Vet_Records=#{vetRecords},
+        </if>
+        <if test="vaccinationRecords !=null">
+            Vaccination_Records =#{vaccinationRecords},
+        </if>
+        <if test="lastModifiedTime !=null">
+            Last_Modified_Time =#{lastModifiedTime},
+        </if>
+        <if test="vaccinationStatus !=null">
+            Vaccination_Status =#{vaccinationStatus}
+        </if>
+        where Pet_id=#{petId}
+    </set>
+    </update>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.NotificationMapper">
+
+    <resultMap id="NotificationMap" type="com.example.demo.dto.NotificationsDto">
+        <id column="System_Notification_id" property="systemNotificationId"/>
+        <result column="User_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="Notification_TIme" property="notificationTIme"/>
+        <result column="Notification_Content" property="notificationContent"/>
+
+
+    </resultMap>
+
+    <select id="listNo" resultMap="NotificationMap">
+        select sn.System_Notification_id,u.username,u.User_id,sn.Notification_TIme,sn.Notification_Content
+        from system_notifications sn,users u
+        where sn.User_id=u.User_id
+        order by sn.Notification_TIme desc ,System_Notification_id desc
+    </select>
+
+    <select id="selectDyNo" resultType="NotificationsDto">
+         select sn.System_Notification_id,u.username,sn.Notification_TIme,sn.Notification_Content
+         from system_notifications sn,users u
+         <where>
+              sn.User_id=u.User_id
+            <if test="username !=null">
+                and username like concat('%',#{username},'%')
+            </if>
+             <if test="d1 !=null and d2!=null">
+                    and Notification_TIme between #{d1} and #{d2}
+             </if>
+         </where>
+         order by sn.Notification_TIme desc
+    </select>
+
+    <insert id="addNotification" >
+        insert into system_notifications(User_id,Notification_TIme, Notification_Content)
+        values (#{userId},#{notificationTIme},#{text})
+
+    </insert>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.AppUserMapper">
+
+    <resultMap id="SelectAppMap" type="com.example.demo.dto.AppUserDto">
+        <id column="Application_id" property="applicationId"/>
+        <result column="Application_Time" property="applicationTime"/>
+        <result column="Contact_Phonenumber" property="contactPhonenumber"/>
+        <result column="username" property="username"/>
+        <result column="Breed" property="breed"/>
+        <result column="Address" property="address"/>
+        <result column="adoption_Status" property="adoptionStatus"/>
+        <result column="Pet_id" property="petId"/>
+        <result column="User_id" property="userId"/>
+        <result column="Ccomment" property="ccomment"/>
+    </resultMap>
+
+    <select id="selectApp" resultMap="SelectAppMap">
+        select ap.Application_Time,ap.Application_id,ap.Ccomment,u.Contact_Phonenumber,u.User_id,u.username,p.Breed,u.Address,ap.adoption_Status,p.Pet_id
+        from adoption_applications ap, users u , pets p
+        where ap.User_id=u.User_id and ap.Pet_id=p.Pet_id
+        order by ap.adoption_Status ,ap.Ccomment desc
+    </select>
+
+
+    <select id="selectDy" resultType="appUserDto">
+        select ap.Application_Time,ap.Application_id,ap.Ccomment,u.Contact_Phonenumber,u.username,p.Breed,u.Address,ap.adoption_Status,p.Pet_id
+        from adoption_applications ap, users u , pets p
+        <where>
+            ap.User_id=u.User_id and ap.Pet_id=p.Pet_id
+            <if test="username !=null">
+                 and username like concat('%',#{username},'%')
+            </if>
+            <if test="breed !=null">
+                and Breed like concat('%',#{breed},'%')
+            </if>
+            <if test="address !=null">
+                and Address like concat('%',#{address},'%')
+            </if>
+            <if test="adoptionStatus !=null">
+                and ap.adoption_Status=#{adoptionStatus}
+            </if>
+        </where>
+        order by ap.Application_Time desc ,Application_id desc
+    </select>
+
+</mapper>
